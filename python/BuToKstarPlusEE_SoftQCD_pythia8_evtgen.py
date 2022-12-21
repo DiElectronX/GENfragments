@@ -1,3 +1,4 @@
+#Author: G Karathanasis, CU Boulder, Rk group
 import FWCore.ParameterSet.Config as cms
 from Configuration.Generator.Pythia8CommonSettings_cfi import *
 from Configuration.Generator.MCTunes2017.PythiaCP5Settings_cfi import *
@@ -12,29 +13,36 @@ generator = cms.EDFilter("Pythia8GeneratorFilter",
         EvtGen130 = cms.untracked.PSet(
             decay_table = cms.string('GeneratorInterface/EvtGenInterface/data/DECAY_2014_NOLONGLIFE.DEC'),
             particle_property_file = cms.FileInPath('GeneratorInterface/EvtGenInterface/data/evt_2014.pdl'),
-            list_forced_decays = cms.vstring('MyB+','MyB-'),
-            operates_on_particles = cms.vint32(521,-521),
+            list_forced_decays = cms.vstring('MyB+','MyB-'),        
+            operates_on_particles = cms.vint32(),    
             convertPythiaCodes = cms.untracked.bool(False),
-	    user_decay_embedded= cms.vstring(
+            user_decay_embedded= cms.vstring(
 """
 Alias      MyB+        B+
 Alias      MyB-        B-
-ChargeConj MyB-        MyB+
-Alias      MyPsi       psi(2S)
-ChargeConj MyPsi       MyPsi
+ChargeConj MyB+        MyB-
+Alias      MyK*+       K*+
+Alias      MyK*-       K*-
+ChargeConj MyK*+       MyK*-
+Alias      MyK_S0      K_S0
+ChargeConj MyK_S0      MyK_S0
 #
 Decay MyB+
-  1.000    MyPsi      K+             SVS;
+1.000        MyK*+     e+     e-      BTOSLLBALL;
 Enddecay
 CDecay MyB-
 #
-Decay MyPsi
-  1.000         e+       e-         PHOTOS VLL;
+Decay MyK*+
+1.000        MyK_S0    pi+              VSS;
 Enddecay
+CDecay MyK*-
 #
+Decay MyK_S0
+1.000        pi+       pi-              PHSP;
+Enddecay
 End
 """
-	    ),
+            )
         ),
         parameterSets = cms.vstring('EvtGen130')
     ),
@@ -57,34 +65,15 @@ End
 
 ###### Filters ##########
 
-bufilter = cms.EDFilter(
-    "PythiaFilter",
-    MaxEta = cms.untracked.double(9999.),
-    MinEta = cms.untracked.double(-9999.),
-    ParticleID = cms.untracked.int32(521) ## Bu
-    )
-
-decayfilterpositiveleg = cms.EDFilter(
+decayfilter = cms.EDFilter(
     "PythiaDauVFilter",
     verbose         = cms.untracked.int32(1),
-    NumberDaughters = cms.untracked.int32(2),
+    NumberDaughters = cms.untracked.int32(3),
     ParticleID      = cms.untracked.int32(521),  ## Bu
-    DaughterIDs     = cms.untracked.vint32(100443, 321), ## J/psi and K+
-    MinPt           = cms.untracked.vdouble(-1., 0.5),
-    MinEta          = cms.untracked.vdouble(-9999., -2.5),
-    MaxEta          = cms.untracked.vdouble( 9999.,  2.5)
-    )
+    DaughterIDs     = cms.untracked.vint32(323, 11, -11), ## K+ e- e+
+    MinPt           = cms.untracked.vdouble(0.5, 3.0, 3.0),
+    MinEta          = cms.untracked.vdouble(-2.5, -1.5, -1.5),
+    MaxEta          = cms.untracked.vdouble( 2.5,  1.5,  1.5),
+)
 
-psifilter = cms.EDFilter(
-    "PythiaDauVFilter",
-    verbose         = cms.untracked.int32(1),
-    NumberDaughters = cms.untracked.int32(2),
-    MotherID        = cms.untracked.int32(521),
-    ParticleID      = cms.untracked.int32(100443),
-    DaughterIDs     = cms.untracked.vint32(11, -11),
-    MinPt           = cms.untracked.vdouble(3.0, 3.0),
-    MinEta          = cms.untracked.vdouble(-1.5, -1.5),
-    MaxEta          = cms.untracked.vdouble(1.5, 1.5)
-    )
-
-ProductionFilterSequence = cms.Sequence(generator*bufilter*decayfilterpositiveleg*psifilter)
+ProductionFilterSequence = cms.Sequence(generator*decayfilter)
