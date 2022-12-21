@@ -22,5 +22,10 @@ git clone git@github.com:DiElectronX/GENfragments.git Configuration/GENfragments
 
 The following script is used to download the GEN fragments used in 2018 (to be used once) 
 ```
-. setup.sh
+. init.sh
+```
+
+The following script runs the cmsDriver commands for each fragment
+```
+. create.sh
 ```
