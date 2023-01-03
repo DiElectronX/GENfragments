@@ -109,7 +109,7 @@ jpsifilter = cms.EDFilter(
     DaughterIDs     = cms.untracked.vint32(11, -11),
     MinPt           = cms.untracked.vdouble(3.0, 3.0), 
     MinEta          = cms.untracked.vdouble(-1.5, -1.5), 
-    MaxEta          = cms.untracked.vdouble(1.5, 1.5.)
+    MaxEta          = cms.untracked.vdouble(1.5, 1.5)
     )
 
 ProductionFilterSequence = cms.Sequence(generator*bfilter*decayfilter*kstarfilter*jpsifilter)
