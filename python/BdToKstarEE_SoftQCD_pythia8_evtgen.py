@@ -99,9 +99,9 @@ bfilter = cms.EDFilter("PythiaFilter",
 
 decayfilter = cms.EDFilter("PythiaDauVFilter",
     DaughterIDs = cms.untracked.vint32(-11, 11, 313),
-    MaxEta = cms.untracked.vdouble(1.5, 1.5, 2.5),
-    MinEta = cms.untracked.vdouble(-1.5, -1.5, -2.5),
-    MinPt = cms.untracked.vdouble(3.0,3.0,0.5),
+    MaxEta = cms.untracked.vdouble( 1.5,  1.5,  9999.),
+    MinEta = cms.untracked.vdouble(-1.5, -1.5, -9999.),
+    MinPt = cms.untracked.vdouble(3.0, 3.0, -1.0),
     NumberDaughters = cms.untracked.int32(3),
     ParticleID = cms.untracked.int32(511),
     verbose = cms.untracked.int32(1)
