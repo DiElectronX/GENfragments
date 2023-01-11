@@ -53,7 +53,6 @@ Decay MyK_S0
 Enddecay
 End
 """
-
             )
         ),
         parameterSets = cms.vstring('EvtGen130')
